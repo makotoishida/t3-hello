@@ -1,5 +1,10 @@
 "use client";
-import { Footer, MantineProvider, useMantineTheme } from "@mantine/core";
+import {
+  Button,
+  Footer,
+  MantineProvider,
+  useMantineTheme,
+} from "@mantine/core";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
@@ -15,7 +20,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(true);
 
   return (
     <SessionProvider session={session}>
@@ -32,14 +37,30 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <AppShell
           padding="sm"
           navbar={
-            <Navbar
-              p="xs"
-              width={{ xs: 200 }}
-              hiddenBreakpoint="xs"
-              hidden={!opened}
-            >
-              <div>Navbar</div>
-            </Navbar>
+            opened ? (
+              <Navbar p="xs" width={{ xs: 200 }} hiddenBreakpoint="xs" hidden>
+                <div>Navbar</div>
+                <Button
+                  variant="default"
+                  compact
+                  w={28}
+                  onClick={() => setOpened(false)}
+                >
+                  &lt;
+                </Button>
+              </Navbar>
+            ) : (
+              <Navbar p="xs" width={{ xs: 20 }} hiddenBreakpoint="xs" hidden>
+                <Button
+                  variant="default"
+                  compact
+                  w={28}
+                  onClick={() => setOpened(true)}
+                >
+                  &gt;
+                </Button>
+              </Navbar>
+            )
           }
           header={
             <Header height={60} p="xs">

@@ -38,7 +38,7 @@ const Home: NextPage = () => {
         </Title>
         <Space h={24}></Space>
         <Demo></Demo>
-        {Array.from(new Array(20).keys()).map((i) => (
+        {[...new Array(20).keys()].map((i) => (
           <>
             <Space h={24}></Space>
             <Text>{i + 1} これはテキストです。</Text>
