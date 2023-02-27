@@ -6,18 +6,22 @@ import { Calendar, DatePicker } from "@mantine/dates";
 import { api } from "../utils/api";
 
 function Demo() {
-  const [value, setValue] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <div className="p-4 flex gap-4  bg-white">
       <>
-        <DatePicker />
+        <DatePicker
+          onChange={(value) => value && setSelectedDate(value)}
+          value={selectedDate}
+        />
         <hr />
         <br />
         <Calendar
           onClick={() => console.log("onClick")}
-          onChange={(value) => value && setValue(value)}
-          value={value}
+          onChange={(value) => value && setSelectedDate(value)}
+          value={selectedDate}
+          month={selectedDate}
         />
       </>
     </div>
