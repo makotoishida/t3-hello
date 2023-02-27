@@ -17,8 +17,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
         withGlobalStyles
         withNormalizeCSS
         theme={{
-          /** Put your mantine theme override here */
+        /** Put your mantine theme override here */
           colorScheme: "light",
+          // colorScheme: "dark",
         }}
       >
         <Component {...pageProps} />
