@@ -1,13 +1,21 @@
 "use client";
 
 import { api } from "../utils/api";
-import { Center, Container, Space, Text, Title } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Container,
+  Flex,
+  List,
+  Text,
+  Title,
+} from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
-function Demo() {
+function DateSelector() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   return (
@@ -20,12 +28,34 @@ function Demo() {
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const res = api.example.getAll.useQuery();
-  const { data, error, isError } = res;
+  const add = api.example.add.useMutation();
+  const update = api.example.update.useMutation();
+  const deleteItem = api.example.delete.useMutation();
+
+  const { data, error, isError, refetch } = res;
   console.log({ res, status: res.status, error: res.error });
 
   if (isError) {
     return <Container p="sm">{error.message}</Container>;
   }
+
+  const handleAdd = async () => {
+    console.log("Add");
+    await add.mutateAsync({ text: "ハロー" });
+    refetch();
+  };
+
+  const handleEdit = async (id: string, text: string) => {
+    console.log("handleEdit");
+    await update.mutateAsync({ id, text });
+    refetch();
+  };
+
+  const handleDelete = async (id: string) => {
+    console.log("handleDelete");
+    await deleteItem.mutateAsync({ id });
+    refetch();
+  };
 
   return (
     <>
@@ -36,6 +66,7 @@ const Home: NextPage = () => {
       </Head>
       <Container p="sm">
         <Title
+          mb="1em"
           align="center"
           order={2}
           variant="gradient"
@@ -43,22 +74,39 @@ const Home: NextPage = () => {
         >
           {hello.data?.greeting}
         </Title>
-        <Space h={24}></Space>
-        <Demo></Demo>
+        <DateSelector></DateSelector>
         {data && data.length ? (
-          <ul>
-            {data.map((item, index) => (
-              <li key={item.id}>
-                <Space h={24}></Space>
-                <Text>
-                  {index + 1} {item.text}
-                </Text>
-              </li>
+          <List my="2em" spacing="md" listStyleType="none">
+            {data.map((item) => (
+              <List.Item key={item.id}>
+                <Flex gap={"0.4rem"}>
+                  <Text>{item.text}</Text>
+                  <Button
+                    onClick={() => handleEdit(item.id, item.text + "a")}
+                    disabled={update.isLoading}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => handleDelete(item.id)}
+                    disabled={deleteItem.isLoading}
+                  >
+                    Delete
+                  </Button>
+                </Flex>
+              </List.Item>
             ))}
-          </ul>
+          </List>
         ) : (
-          <Center>No data found</Center>
+          <Center my="2em" c="gray">
+            No data found
+          </Center>
         )}
+        <Center>
+          <Button onClick={handleAdd} disabled={add.isLoading}>
+            Add
+          </Button>
+        </Center>
       </Container>
     </>
   );
