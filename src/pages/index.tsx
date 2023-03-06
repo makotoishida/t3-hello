@@ -1,11 +1,11 @@
 "use client";
+
+import { api } from "../utils/api";
+import { Center, Container, Space, Text, Title } from "@mantine/core";
+import { DatePicker } from "@mantine/dates";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-
-import { Container, Space, Text, Title } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
-import { api } from "../utils/api";
 
 function Demo() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -19,6 +19,13 @@ function Demo() {
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const res = api.example.getAll.useQuery();
+  const { data, error, isError } = res;
+  console.log({ res, status: res.status, error: res.error });
+
+  if (isError) {
+    return <Container p="sm">{error.message}</Container>;
+  }
 
   return (
     <>
@@ -34,16 +41,24 @@ const Home: NextPage = () => {
           variant="gradient"
           gradient={{ from: "indigo", to: "cyan", deg: 45 }}
         >
-          ようこそ T3 App へ!
+          {hello.data?.greeting}
         </Title>
         <Space h={24}></Space>
         <Demo></Demo>
-        {[...new Array(20).keys()].map((i) => (
-          <>
-            <Space h={24}></Space>
-            <Text>{i + 1} これはテキストです。</Text>
-          </>
-        ))}
+        {data && data.length ? (
+          <ul>
+            {data.map((item, index) => (
+              <li key={item.id}>
+                <Space h={24}></Space>
+                <Text>
+                  {index + 1} {item.text}
+                </Text>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Center>No data found</Center>
+        )}
       </Container>
     </>
   );

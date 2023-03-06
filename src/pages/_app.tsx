@@ -1,18 +1,19 @@
 "use client";
+
+import { api } from "../utils/api";
+import { emotionCache } from "../utils/emotion-cache";
 import {
   Button,
   Footer,
   MantineProvider,
   useMantineTheme,
 } from "@mantine/core";
+import { AppShell, Header, Navbar } from "@mantine/core";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
-
-import { AppShell, Header, Navbar } from "@mantine/core";
 import { useState } from "react";
-import { api } from "../utils/api";
-import { emotionCache } from "../utils/emotion-cache";
+
 // import "../styles/globals.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -39,7 +40,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
           navbar={
             opened ? (
               <Navbar p="xs" width={{ xs: 200 }} hiddenBreakpoint="xs" hidden>
-                <div>Navbar</div>
                 <Button
                   variant="default"
                   compact
@@ -48,6 +48,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
                 >
                   &lt;
                 </Button>
+                <div>Navbar</div>
               </Navbar>
             ) : (
               <Navbar p="xs" width={{ xs: 20 }} hiddenBreakpoint="xs" hidden>

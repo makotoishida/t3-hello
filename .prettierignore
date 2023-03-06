@@ -4,6 +4,5 @@
 *.lock
 db/migrations
 .next
-.blitz
 .yarn
 .pnp*
