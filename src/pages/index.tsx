@@ -27,34 +27,30 @@ function DateSelector() {
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const res = api.example.getAll.useQuery();
-  const add = api.example.add.useMutation();
-  const update = api.example.update.useMutation();
-  const deleteItem = api.example.delete.useMutation();
 
+  const res = api.example.getAll.useQuery();
   const { data, error, isError, refetch } = res;
-  console.log({ res, status: res.status, error: res.error });
+
+  const add = api.example.add.useMutation({ onSuccess: () => refetch() });
+  const update = api.example.update.useMutation({ onSuccess: () => refetch() });
+  const deleteItem = api.example.delete.useMutation({
+    onSuccess: () => refetch(),
+  });
 
   if (isError) {
     return <Container p="sm">{error.message}</Container>;
   }
 
-  const handleAdd = async () => {
-    console.log("Add");
-    await add.mutateAsync({ text: "ハロー" });
-    refetch();
+  const handleAdd = () => {
+    add.mutate({ text: "ハロー" });
   };
 
-  const handleEdit = async (id: string, text: string) => {
-    console.log("handleEdit");
-    await update.mutateAsync({ id, text });
-    refetch();
+  const handleEdit = (id: string, text: string) => {
+    update.mutate({ id, text });
   };
 
-  const handleDelete = async (id: string) => {
-    console.log("handleDelete");
-    await deleteItem.mutateAsync({ id });
-    refetch();
+  const handleDelete = (id: string) => {
+    deleteItem.mutate({ id });
   };
 
   return (
