@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { api } from "../utils/api";
-import { TaskList } from "./TaskList";
-import { Container, Title } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
-import { type NextPage } from "next";
-import Head from "next/head";
-import { useState } from "react";
+import { TaskList } from '../components/TaskList';
+import { api } from '../utils/api';
+import { Container, Title } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { type NextPage } from 'next';
+import Head from 'next/head';
+import { useState } from 'react';
 
 function DateSelector() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -19,7 +19,7 @@ function DateSelector() {
 }
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const hello = api.example.hello.useQuery({ text: 'from tRPC' });
 
   return (
     <>
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
           align="center"
           order={2}
           variant="gradient"
-          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+          gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
         >
           {hello.data?.greeting}
         </Title>

@@ -1,6 +1,6 @@
-import { api } from "../utils/api";
-import { TaskListItem } from "./TaskListItem";
-import { Button, Center, Container, List } from "@mantine/core";
+import { api } from '../utils/api';
+import { TaskListItem } from './TaskListItem';
+import { Button, Center, Container, List } from '@mantine/core';
 
 export function TaskList() {
   const { data, error, isError, refetch } = api.example.getAll.useQuery();
@@ -11,7 +11,7 @@ export function TaskList() {
   }
 
   const handleAdd = () => {
-    add.mutate({ text: "ハロー" });
+    add.mutate({ text: 'ハロー' });
   };
 
   return (
