@@ -1,6 +1,7 @@
 import { api } from '../utils/api';
 import { TaskListItem } from './TaskListItem';
-import { Button, Center, Container, List } from '@mantine/core';
+import { ActionIcon, Box, Center, Container } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 
 export function TaskList() {
   const { data, error, isError, refetch } = api.example.getAll.useQuery();
@@ -17,20 +18,24 @@ export function TaskList() {
   return (
     <>
       {data && data.length ? (
-        <List my="2em" spacing="md" listStyleType="none">
+        <Box my="2em">
           {data.map((item) => (
             <TaskListItem key={item.id} item={item} />
           ))}
-        </List>
+        </Box>
       ) : (
         <Center my="2em" c="gray">
           No data found
         </Center>
       )}
       <Center>
-        <Button onClick={handleAdd} disabled={add.isLoading}>
-          Add
-        </Button>
+        <ActionIcon
+          component="button"
+          onClick={handleAdd}
+          disabled={add.isLoading}
+        >
+          <IconPlus></IconPlus>
+        </ActionIcon>
       </Center>
     </>
   );

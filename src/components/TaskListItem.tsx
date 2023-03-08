@@ -1,6 +1,12 @@
 import { api } from '../utils/api';
-import { Button, Flex, Input, List, Text } from '@mantine/core';
+import { ActionIcon, Box, Input, Text } from '@mantine/core';
 import { Example } from '@prisma/client';
+import {
+  IconCircleCheck,
+  IconCircleX,
+  IconEdit,
+  IconTrash,
+} from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 
 export function TaskListItem({ item }: { item: Example }) {
@@ -38,34 +44,68 @@ export function TaskListItem({ item }: { item: Example }) {
   };
 
   return (
-    <List.Item key={item.id}>
+    <>
       {isEditing ? (
-        <Flex gap={'0.4rem'}>
+        <Box
+          key={item.id}
+          my="0.4rem"
+          sx={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}
+        >
           <Input
             ref={ref}
             placeholder="Input a text"
             defaultValue={item.text}
             required
+            sx={{ flexGrow: 1 }}
           />
-          <Button onClick={() => handleEditCancel()}>Cancel</Button>
-          <Button onClick={() => handleEditDone()} disabled={update.isLoading}>
-            Save
-          </Button>
-        </Flex>
+          <ActionIcon
+            component="button"
+            color="red"
+            onClick={() => handleEditCancel()}
+          >
+            <IconCircleX></IconCircleX>
+          </ActionIcon>
+          <ActionIcon
+            component="button"
+            color="blue"
+            onClick={() => handleEditDone()}
+            disabled={update.isLoading}
+          >
+            <IconCircleCheck></IconCircleCheck>
+          </ActionIcon>
+        </Box>
       ) : (
-        <Flex gap={'0.4rem'}>
-          <Text>{item.text}</Text>
-          <Button onClick={() => handleEdit()} disabled={update.isLoading}>
-            Edit
-          </Button>
-          <Button
+        <Box
+          key={item.id}
+          my="0.4rem"
+          sx={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}
+        >
+          <Text
+            sx={{
+              flexGrow: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              overflowWrap: 'normal',
+            }}
+          >
+            {item.text}
+          </Text>
+          <ActionIcon
+            component="button"
+            onClick={() => handleEdit()}
+            disabled={update.isLoading}
+          >
+            <IconEdit></IconEdit>
+          </ActionIcon>
+          <ActionIcon
+            component="button"
             onClick={() => handleDelete()}
             disabled={deleteItem.isLoading}
           >
-            Delete
-          </Button>
-        </Flex>
+            <IconTrash></IconTrash>
+          </ActionIcon>
+        </Box>
       )}
-    </List.Item>
+    </>
   );
 }

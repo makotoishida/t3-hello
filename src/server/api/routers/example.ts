@@ -1,5 +1,5 @@
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { z } from "zod";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { z } from 'zod';
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -11,7 +11,7 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+    return ctx.prisma.example.findMany({ orderBy: [{ id: 'asc' }] });
   }),
 
   add: publicProcedure
@@ -21,7 +21,7 @@ export const exampleRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      console.log("tRPC add():", input);
+      console.log('tRPC add():', input);
       return ctx.prisma.example.create({
         data: {
           text: input.text,
@@ -37,7 +37,7 @@ export const exampleRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      console.log("tRPC update():", input);
+      console.log('tRPC update():', input);
       return ctx.prisma.example.update({
         where: { id: input.id },
         data: {
@@ -53,13 +53,13 @@ export const exampleRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      console.log("tRPC delete():", input);
+      console.log('tRPC delete():', input);
       return ctx.prisma.example.delete({
         where: { id: input.id },
       });
     }),
 
   getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+    return 'you can now see this secret message!';
   }),
 });
