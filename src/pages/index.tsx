@@ -1,10 +1,12 @@
 'use client';
 
+import { SignIn } from '../components/SignIn';
 import { TaskList } from '../components/TaskList';
 import { api } from '../utils/api';
 import { Container, Title } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { type NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useState } from 'react';
 
@@ -19,7 +21,18 @@ function DateSelector() {
 }
 
 const Home: NextPage = () => {
+  const { data: session, status } = useSession();
   const hello = api.example.hello.useQuery({ text: 'from tRPC' });
+
+  console.log('session', session, 'status=', status);
+
+  if (status == 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (!session || !session.user) {
+    return <SignIn />;
+  }
 
   return (
     <>
@@ -36,7 +49,7 @@ const Home: NextPage = () => {
           variant="gradient"
           gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
         >
-          {hello.data?.greeting}
+          Todo List
         </Title>
         <DateSelector></DateSelector>
         <TaskList></TaskList>
