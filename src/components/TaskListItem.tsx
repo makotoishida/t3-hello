@@ -1,6 +1,6 @@
 import { api } from '../utils/api';
 import { ActionIcon, Box, Input, Text } from '@mantine/core';
-import { Example } from '@prisma/client';
+import type { Example } from '@prisma/client';
 import {
   IconCircleCheck,
   IconCircleX,

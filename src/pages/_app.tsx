@@ -1,5 +1,3 @@
-'use client';
-
 import { MyFooter } from '../components/MyFooter';
 import { MyHeader } from '../components/MyHeader';
 import { MyNavBar } from '../components/MyNavBar';
@@ -25,6 +23,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         withGlobalStyles
         withNormalizeCSS
         theme={{
+          ...theme,
           /** Put your mantine theme override here */
           colorScheme: 'light',
           // colorScheme: "dark",
@@ -41,7 +40,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
                   : theme.colors.gray[0],
             },
           })}
-          navbar={<MyNavBar {...{ opened, session, setOpened }} />}
+          navbar={<MyNavBar {...{ opened, setOpened }} />}
           header={<MyHeader />}
           footer={<MyFooter />}
         >

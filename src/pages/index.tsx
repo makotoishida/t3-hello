@@ -22,7 +22,7 @@ function DateSelector() {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const hello = api.example.hello.useQuery({ text: 'from tRPC' });
+  const { data: msg } = api.example.getSecretMessage.useQuery();
 
   console.log('session', session, 'status=', status);
 
@@ -51,6 +51,7 @@ const Home: NextPage = () => {
         >
           Todo List
         </Title>
+        {msg}
         <DateSelector></DateSelector>
         <TaskList></TaskList>
       </Container>

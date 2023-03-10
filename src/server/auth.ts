@@ -1,6 +1,10 @@
+// import { prisma } from './db';
+// import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { UserRole } from '@prisma/client';
 import type { GetServerSidePropsContext } from 'next';
 import {
   getServerSession,
+  User,
   type DefaultSession,
   type NextAuthOptions,
 } from 'next-auth';
@@ -18,14 +22,22 @@ declare module 'next-auth' {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      role: UserRole;
     } & DefaultSession['user'];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    // ...other properties
+    username: string;
+    role: UserRole;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+  interface JWT {
+    role: UserRole;
+  }
 }
 
 /**
@@ -37,26 +49,22 @@ declare module 'next-auth' {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session({ session, token, user }) {
-      console.log('auth session callback: ', session, token, user);
       if (token && token.sub) {
+        console.log('session callback: ', session, token, user);
         session.user.id = token.sub;
-        // session.user.role = user.role; <-- put other properties on the session here
+        session.user.role = token.role;
       }
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log(
-        'auth JWT callback: ',
-        token,
-        user,
-        account,
-        profile,
-        isNewUser
-      );
+      if (user) {
+        console.log('JWT callback: ', token, user, account, profile, isNewUser);
+        token.role = user.role;
+      }
       return token;
     },
   },
-  // adapter: PrismaAdapter(prisma),
+  // a  dapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -65,15 +73,16 @@ export const authOptions: NextAuthOptions = {
         username: { label: 'Username', type: 'text', placeholder: '' },
         password: { label: 'Password', type: 'password' },
       },
+
       async authorize(credentials, req) {
         console.log('authorize', credentials);
 
-        const user = {
+        const user: User = {
           id: '1',
           name: 'Test User',
           email: 'test@test.com',
           username: 'test',
-          role: 'admin',
+          role: 'ADMIN',
         };
         return user;
       },

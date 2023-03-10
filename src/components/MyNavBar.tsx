@@ -1,19 +1,31 @@
 import { Button, Navbar } from '@mantine/core';
-import { Session } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
 
 type Props = {
   opened: boolean;
-  session: Session | null;
+  // session: Session | null;
   setOpened: (v: boolean) => void;
 };
 
-export function MyNavBar({ opened, session, setOpened }: Props) {
+export function MyNavBar({ opened, setOpened }: Props) {
+  const { data: session, status } = useSession();
+  console.log('Rendering MyNavBar: ', session);
+
+  function handleSignOut() {
+    signOut();
+  }
+
   return opened ? (
     <Navbar p="xs" width={{ xs: 200 }} hiddenBreakpoint="xs" hidden>
       <Button variant="default" compact w={28} onClick={() => setOpened(false)}>
         &lt;
       </Button>
-      <div>User: {session?.user.name}</div>
+      {status !== 'loading' && session && session.user ? (
+        <>
+          <div>User: {session?.user.name}</div>
+          <Button onClick={handleSignOut}>Sign out</Button>
+        </>
+      ) : null}
     </Navbar>
   ) : (
     <Navbar p="xs" width={{ xs: 20 }} hiddenBreakpoint="xs" hidden>

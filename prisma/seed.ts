@@ -33,6 +33,17 @@ async function createUsers() {
       password_hash: hashedPassword,
     },
   });
+  const adminUser = await prisma.user.upsert({
+    where: { username: 'mike' },
+    update: {},
+    create: {
+      email: 'mike@test.com',
+      name: 'Mike Test',
+      username: 'mike',
+      password_hash: hashedPassword,
+      role: 'ADMIN',
+    },
+  });
 }
 
 main()

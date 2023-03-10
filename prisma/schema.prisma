@@ -49,7 +49,7 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum Role {
+enum UserRole {
    USER
    ADMIN
  }
@@ -62,7 +62,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    role Role     @default(USER)
+    role UserRole     @default(USER)
     username      String    @unique
     password_hash String?
 }

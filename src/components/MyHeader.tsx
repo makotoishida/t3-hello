@@ -2,7 +2,7 @@ import { Header, Title } from '@mantine/core';
 
 export function MyHeader() {
   return (
-    <Header height={60} p="xs">
+    <Header height={90} p="xs">
       <div>
         <Title
           mb="1em"
