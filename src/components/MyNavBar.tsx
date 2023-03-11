@@ -9,7 +9,7 @@ type Props = {
 
 export function MyNavBar({ opened, setOpened }: Props) {
   const { data: session, status } = useSession();
-  console.log('Rendering MyNavBar: ', session);
+  // console.log('Rendering MyNavBar: ', session);
 
   function handleSignOut(): void {
     signOut().catch((e) => console.log(e));
@@ -23,7 +23,9 @@ export function MyNavBar({ opened, setOpened }: Props) {
       {status !== 'loading' && session && session.user ? (
         <>
           <div>User: {session?.user.name}</div>
-          <Button onClick={handleSignOut}>Sign out</Button>
+          <Button type="button" onClick={handleSignOut}>
+            Sign out
+          </Button>
         </>
       ) : null}
     </Navbar>

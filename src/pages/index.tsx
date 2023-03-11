@@ -20,9 +20,14 @@ function DateSelector() {
   );
 }
 
+function SecretMsg() {
+  const { data: msg } = api.example.getSecretMessage.useQuery();
+
+  return <div>{msg}</div>;
+}
+
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const { data: msg } = api.example.getSecretMessage.useQuery();
 
   console.log('session', session, 'status=', status);
 
@@ -51,7 +56,7 @@ const Home: NextPage = () => {
         >
           Todo List
         </Title>
-        {msg}
+        <SecretMsg></SecretMsg>
         <DateSelector></DateSelector>
         <TaskList></TaskList>
       </Container>

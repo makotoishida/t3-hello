@@ -1,4 +1,5 @@
 import { signIn } from 'next-auth/react';
+import { FormEvent, FormEventHandler } from 'react';
 
 // import { useForm } from 'react-hook-form';
 
@@ -9,8 +10,8 @@ export function SignIn() {
   //   formState: { errors, isValid },
   // } = useForm();
 
-  const onSubmit = (data: unknown) => {
-    console.log('data', data);
+  const onSubmit: FormEventHandler<HTMLFormElement> = (e: FormEvent) => {
+    e.preventDefault();
     signIn().catch((e) => console.log(e));
   };
   // if (!isValid) console.log('errors', errors);
