@@ -1,12 +1,12 @@
 // import { prisma } from './db';
 // import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { UserRole } from '@prisma/client';
+import type { UserRole } from '@prisma/client';
 import type { GetServerSidePropsContext } from 'next';
 import {
   getServerSession,
-  User,
   type DefaultSession,
   type NextAuthOptions,
+  type User,
 } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    jwt({ token, user, account, profile, isNewUser }) {
       if (user) {
         console.log('JWT callback: ', token, user, account, profile, isNewUser);
         token.role = user.role;
@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
 
-      async authorize(credentials, req) {
+      authorize(credentials) {
         console.log('authorize', credentials);
 
         const user: User = {

@@ -1,21 +1,23 @@
 import { signIn } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
+
+// import { useForm } from 'react-hook-form';
 
 export function SignIn() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm();
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors, isValid },
+  // } = useForm();
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: unknown) => {
     console.log('data', data);
-    signIn();
+    signIn().catch((e) => console.log(e));
   };
-  if (!isValid) console.log('errors', errors);
+  // if (!isValid) console.log('errors', errors);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    //  <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={onSubmit}>
       {/* <div>
         <label>
           Username

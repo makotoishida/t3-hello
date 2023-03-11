@@ -11,8 +11,8 @@ export function MyNavBar({ opened, setOpened }: Props) {
   const { data: session, status } = useSession();
   console.log('Rendering MyNavBar: ', session);
 
-  function handleSignOut() {
-    signOut();
+  function handleSignOut(): void {
+    signOut().catch((e) => console.log(e));
   }
 
   return opened ? (
