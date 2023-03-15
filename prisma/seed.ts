@@ -21,7 +21,7 @@ async function main() {
 
 async function createUsers() {
   const saltRounds = 10;
-  const password = 'test';
+  const password = 'TEst09#!';
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   const testUser = await prisma.user.upsert({
     where: { username: 'test' },
@@ -33,6 +33,18 @@ async function createUsers() {
       password_hash: hashedPassword,
     },
   });
+
+  const test2User = await prisma.user.upsert({
+    where: { username: 'test2' },
+    update: {},
+    create: {
+      email: 'test2@test.com',
+      name: 'テスト2',
+      username: 'test2',
+      password_hash: hashedPassword,
+    },
+  });
+
   const adminUser = await prisma.user.upsert({
     where: { username: 'mike' },
     update: {},

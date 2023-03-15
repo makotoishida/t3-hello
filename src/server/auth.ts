@@ -1,14 +1,15 @@
-// import { prisma } from './db';
-// import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from './db';
 import type { UserRole } from '@prisma/client';
+import { compare } from 'bcrypt';
 import type { GetServerSidePropsContext } from 'next';
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
-  type User,
 } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+
+// import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 /**
  * Module augmentation for `next-auth` types.
@@ -64,7 +65,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  // a  dapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -74,17 +75,20 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
 
-      authorize(credentials) {
+      async authorize(credentials) {
         console.log('authorize', credentials);
+        if (!credentials) return null;
+        const { username, password } = credentials;
+        if (!username || !password) return null;
 
-        const user: User = {
-          id: '1',
-          name: 'Test User',
-          email: 'test@test.com',
-          username: 'test',
-          role: 'ADMIN',
-        };
-        return user;
+        const user = await prisma.user.findFirst({ where: { username } });
+        if (!user) return null;
+
+        if (await compare(password, user.password_hash!)) {
+          return user;
+        }
+
+        return null;
       },
     }),
   ],
