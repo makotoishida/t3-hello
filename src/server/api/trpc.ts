@@ -15,11 +15,19 @@
  * These allow you to access things when processing a request, like the
  * database, the session, etc.
  */
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
+import { getServerAuthSession } from '../auth';
+import { prisma } from '../db';
 
-import { getServerAuthSession } from "../auth";
-import { prisma } from "../db";
+/**
+ * 2. INITIALIZATION
+ *
+ * This is where the tRPC API is initialized, connecting the context and
+ * transformer.
+ */
+import { initTRPC, TRPCError } from '@trpc/server';
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { type Session } from 'next-auth';
+import superjson from 'superjson';
 
 type CreateContextOptions = {
   session: Session | null;
@@ -59,15 +67,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   });
 };
 
-/**
- * 2. INITIALIZATION
- *
- * This is where the tRPC API is initialized, connecting the context and
- * transformer.
- */
-import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
-
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape }) {
@@ -104,7 +103,29 @@ export const publicProcedure = t.procedure;
  */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+/**
+ * Reusable middleware that enforces users are logged in before running the
+ * procedure.
+ */
+const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  if (ctx.session.user.role !== 'ADMIN') {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'The action is for ADMIN only.',
+    });
   }
   return next({
     ctx: {
@@ -123,4 +144,6 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = publicProcedure.use(enforceUserIsAuthed);
+
+export const adminOnlyProcedure = protectedProcedure.use(enforceUserIsAdmin);

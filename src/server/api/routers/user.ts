@@ -1,12 +1,12 @@
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { adminOnlyProcedure, createTRPCRouter } from '../trpc';
 import { z } from 'zod';
 
 export const userRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAll: adminOnlyProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findMany({ orderBy: [{ id: 'asc' }] });
   }),
 
-  add: protectedProcedure
+  add: adminOnlyProcedure
     .input(
       z.object({
         name: z.string(),
@@ -25,7 +25,7 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  update: protectedProcedure
+  update: adminOnlyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -46,7 +46,7 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure
+  delete: adminOnlyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -54,6 +54,14 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       console.log('tRPC delete():', input);
+
+      if (ctx.session.user.role !== 'ADMIN') {
+        throw new Error(`Not authorized.`);
+      }
+      if (input.id === ctx.session.user.id) {
+        throw new Error(`You cannot delete the current user.`);
+      }
+
       return ctx.prisma.user.delete({
         where: { id: input.id },
       });

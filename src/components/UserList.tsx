@@ -12,7 +12,15 @@ export function UserList() {
   }
 
   const handleAdd = () => {
-    add.mutate({ name: 'User', email: '', username: '' });
+    add.mutate(
+      { name: 'User', email: '', username: '' },
+      {
+        onError: (err) => {
+          console.log(err.message);
+          alert(err.message);
+        },
+      }
+    );
   };
 
   return (

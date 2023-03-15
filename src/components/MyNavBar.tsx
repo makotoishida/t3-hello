@@ -32,9 +32,11 @@ export function MyNavBar({ opened, setOpened }: Props) {
         <Link href="/">Home</Link>
       </Box>
 
-      <Box my="0.2rem ">
-        <Link href="/users/">Users</Link>
-      </Box>
+      {session?.user.role === 'ADMIN' ? (
+        <Box my="0.2rem ">
+          <Link href="/users/">Users</Link>
+        </Box>
+      ) : null}
 
       {status !== 'loading' && session && session.user ? (
         <Box my="1rem">
