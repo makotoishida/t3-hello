@@ -9,14 +9,18 @@ export const userRouter = createTRPCRouter({
   add: protectedProcedure
     .input(
       z.object({
-        text: z.string(),
+        name: z.string(),
+        email: z.string(),
+        username: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
       console.log('tRPC add():', input);
-      return ctx.prisma.example.create({
+      return ctx.prisma.user.create({
         data: {
-          text: input.text,
+          name: input.name,
+          email: input.email,
+          username: input.username,
         },
       });
     }),
@@ -25,15 +29,19 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        text: z.string(),
+        name: z.string(),
+        email: z.string(),
+        username: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
       console.log('tRPC update():', input);
-      return ctx.prisma.example.update({
+      return ctx.prisma.user.update({
         where: { id: input.id },
         data: {
-          text: input.text,
+          name: input.name,
+          email: input.email,
+          username: input.username,
         },
       });
     }),
@@ -46,12 +54,8 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       console.log('tRPC delete():', input);
-      return ctx.prisma.example.delete({
+      return ctx.prisma.user.delete({
         where: { id: input.id },
       });
     }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return 'you can now see this secret message!';
-  }),
 });
